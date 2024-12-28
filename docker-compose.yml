@@ -1,12 +1,13 @@
 version: "3.8"
 
+name: aptio
 services:
 
   db:
-    image: postgres:15
+    image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_DB=bank_management
+      - POSTGRES_DB=aptio_db
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
     ports:
@@ -14,75 +15,43 @@ services:
     networks:
       - jenkins_network
 
-  sonar-postgres:
-    image: postgres:15
-    container_name: sonar-postgres
-    restart: always
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-      - POSTGRES_DB=sonarqube
-    ports:
-      - "5433:5433"
-    networks:
-      - jenkins_network
-
-  sonarqube:
-    image: sonarqube:latest
-    container_name: sonarqube
-    restart: always
-    depends_on:
-      - sonar-postgres
-    environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://sonar-postgres:5432/sonarqube
-      - SONAR_JDBC_USERNAME=sonar
-      - SONAR_JDBC_PASSWORD=sonar
-    ports:
-      - "9000:9000"
-    networks:
-      - jenkins_network
-
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:22.0.1
-#    container_name: keycloak
+#  sonar-postgres:
+#    image: postgres:15
+#    container_name: sonar-postgres
 #    restart: always
-#    command: start-dev
 #    environment:
-#      - KC_DB=postgres
-#      - KC_DB_URL=jdbc:postgresql://keycloak-postgres:5432/keycloak
-#      - KC_DB_USERNAME=keycloak
-#      - KC_DB_PASSWORD=keycloak
-#      - KEYCLOAK_ADMIN=admin
-#      - KEYCLOAK_ADMIN_PASSWORD=admin
+#      - POSTGRES_USER=sonar
+#      - POSTGRES_PASSWORD=sonar
+#      - POSTGRES_DB=sonarqube
 #    ports:
-#      - "8081:8080"
-#    depends_on:
-#      - keycloak-postgres
+#      - "5433:5433"
 #    networks:
 #      - jenkins_network
 #
-#  keycloak-postgres:
-#      image: postgres:15
-#      container_name: keycloak-postgres
-#      restart: always
-#      environment:
-#        - POSTGRES_DB=keycloak
-#        - POSTGRES_USER=keycloak
-#        - POSTGRES_PASSWORD=keycloak
-#      ports:
-#        - "5434:5432"
-#      networks:
-#        - jenkins_network
+#  sonarqube:
+#    image: sonarqube:latest
+#    container_name: sonarqube
+#    restart: always
+#    depends_on:
+#      - sonar-postgres
+#    environment:
+#      - SONAR_JDBC_URL=jdbc:postgresql://sonar-postgres:5432/sonarqube
+#      - SONAR_JDBC_USERNAME=sonar
+#      - SONAR_JDBC_PASSWORD=sonar
+#    ports:
+#      - "9000:9000"
+#    networks:
+#      - jenkins_network
 
 #  app:
-#    image: my-ebankify-app
+#    image: aptio-app
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
 #    ports:
 #      - "8080:8080"
 #    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bank_management
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/aptio_db
 #      - SPRING_DATASOURCE_USERNAME=admin
 #      - SPRING_DATASOURCE_PASSWORD=admin
 #    depends_on:
