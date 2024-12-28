@@ -1,4 +1,4 @@
-package com.youcode.aptio;
+package com.aptio;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
