@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.dto.auth;
+package com.youcode.aptio.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
