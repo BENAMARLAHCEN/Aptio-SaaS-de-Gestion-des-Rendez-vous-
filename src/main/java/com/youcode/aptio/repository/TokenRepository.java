@@ -1,6 +1,6 @@
-package com.youcode.aptiov2.repository;
+package com.youcode.aptio.repository;
 
-import com.youcode.aptiov2.model.Token;
+import com.youcode.aptio.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

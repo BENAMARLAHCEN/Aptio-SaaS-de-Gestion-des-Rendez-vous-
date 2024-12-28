@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.repository;
+package com.youcode.aptio.repository;
 
 import com.youcode.aptio.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
