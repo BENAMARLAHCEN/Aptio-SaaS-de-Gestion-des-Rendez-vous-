@@ -4,10 +4,13 @@ import com.youcode.aptio.dto.auth.AuthenticationRequest;
 import com.youcode.aptio.dto.auth.AuthenticationResponse;
 import com.youcode.aptio.dto.auth.RefreshTokenRequest;
 import com.youcode.aptio.dto.auth.RegisterRequest;
+import com.youcode.aptio.model.Role;
 import com.youcode.aptio.model.Token;
 import com.youcode.aptio.model.User;
+import com.youcode.aptio.repository.RoleRepository;
 import com.youcode.aptio.repository.TokenRepository;
 import com.youcode.aptio.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,15 +18,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    public AuthenticationService(
+            UserRepository userRepository,
+            TokenRepository tokenRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            AuthenticationManager authenticationManager,
+            RoleRepository roleRepository
+    ) {
+        this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.roleRepository = roleRepository;
+    }
+
     public AuthenticationResponse register(RegisterRequest request) {
+        userRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new RuntimeException("User already exists");
+                });
+        userRepository.findByUsername(request.getUsername())
+                .ifPresent(user -> {
+                    throw new RuntimeException("Username already exists");
+                });
         var user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -32,10 +59,13 @@ public class AuthenticationService {
                 .lastName(request.getLastName())
                 .phone(request.getPhone())
                 .build();
-
-        var savedUser = userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
+                () -> new RuntimeException("Role not found")
+        );
+        user.setRole(role);
+        User savedUser = userRepository.save(user);
+        String jwtToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
 
         return AuthenticationResponse.builder()
@@ -53,7 +83,9 @@ public class AuthenticationService {
         );
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(
+                        () -> new EntityNotFoundException("User not found")
+                );
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
@@ -70,7 +102,9 @@ public class AuthenticationService {
         final String userEmail = jwtService.extractUsername(refreshToken);
 
         if (userEmail != null) {
-            var user = userRepository.findByEmail(userEmail).orElseThrow();
+            var user = userRepository.findByUsername(userEmail).orElseThrow(
+                    () -> new EntityNotFoundException("User not found")
+            );
 
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);

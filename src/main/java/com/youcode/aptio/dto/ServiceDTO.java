@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.dto;
+package com.youcode.aptio.dto;
 
 public class ServiceDTO {
 }
