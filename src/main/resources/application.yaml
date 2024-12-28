@@ -17,3 +17,5 @@ jwt:
   secret: aptio-secret-key-is-very-long-and-secure-key
   expiration: 3600000
   refreshExpiration: 604800000
+
+debug: true
