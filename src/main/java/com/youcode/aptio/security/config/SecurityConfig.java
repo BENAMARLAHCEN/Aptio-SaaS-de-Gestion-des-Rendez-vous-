@@ -1,5 +1,5 @@
-package com.youcode.aptiov2.security.config;
-import com.youcode.aptiov2.security.filter.JwtAuthenticationFilter;
+package com.youcode.aptio.security.config;
+import com.youcode.aptio.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

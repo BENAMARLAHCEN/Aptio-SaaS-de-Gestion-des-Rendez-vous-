@@ -1,6 +1,6 @@
-package com.youcode.aptiov2.security.config;
+package com.youcode.aptio.security.config;
 
-import com.youcode.aptiov2.repository.UserRepository;
+import com.youcode.aptio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

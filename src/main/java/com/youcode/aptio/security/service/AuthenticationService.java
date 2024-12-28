@@ -1,13 +1,13 @@
-package com.youcode.aptiov2.security.service;
+package com.youcode.aptio.security.service;
 
-import com.youcode.aptiov2.dto.auth.AuthenticationRequest;
-import com.youcode.aptiov2.dto.auth.AuthenticationResponse;
-import com.youcode.aptiov2.dto.auth.RefreshTokenRequest;
-import com.youcode.aptiov2.dto.auth.RegisterRequest;
-import com.youcode.aptiov2.model.Token;
-import com.youcode.aptiov2.model.User;
-import com.youcode.aptiov2.repository.TokenRepository;
-import com.youcode.aptiov2.repository.UserRepository;
+import com.youcode.aptio.dto.auth.AuthenticationRequest;
+import com.youcode.aptio.dto.auth.AuthenticationResponse;
+import com.youcode.aptio.dto.auth.RefreshTokenRequest;
+import com.youcode.aptio.dto.auth.RegisterRequest;
+import com.youcode.aptio.model.Token;
+import com.youcode.aptio.model.User;
+import com.youcode.aptio.repository.TokenRepository;
+import com.youcode.aptio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

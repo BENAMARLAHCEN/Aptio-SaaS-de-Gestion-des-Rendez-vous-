@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.security.service;
+package com.youcode.aptio.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

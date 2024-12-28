@@ -1,7 +1,7 @@
-package com.youcode.aptiov2.security.filter;
+package com.youcode.aptio.security.filter;
 
-import com.youcode.aptiov2.repository.TokenRepository;
-import com.youcode.aptiov2.security.service.JwtService;
+import com.youcode.aptio.repository.TokenRepository;
+import com.youcode.aptio.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

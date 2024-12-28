@@ -1,10 +1,10 @@
-package com.youcode.aptiov2.controller;
+package com.youcode.aptio.controller;
 
-import com.youcode.aptiov2.dto.auth.AuthenticationRequest;
-import com.youcode.aptiov2.dto.auth.AuthenticationResponse;
-import com.youcode.aptiov2.dto.auth.RefreshTokenRequest;
-import com.youcode.aptiov2.dto.auth.RegisterRequest;
-import com.youcode.aptiov2.security.service.AuthenticationService;
+import com.youcode.aptio.dto.auth.AuthenticationRequest;
+import com.youcode.aptio.dto.auth.AuthenticationResponse;
+import com.youcode.aptio.dto.auth.RefreshTokenRequest;
+import com.youcode.aptio.dto.auth.RegisterRequest;
+import com.youcode.aptio.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

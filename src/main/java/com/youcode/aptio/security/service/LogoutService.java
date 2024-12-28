@@ -1,6 +1,6 @@
-package com.youcode.aptiov2.security.service;
+package com.youcode.aptio.security.service;
 
-import com.youcode.aptiov2.repository.TokenRepository;
+import com.youcode.aptio.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
