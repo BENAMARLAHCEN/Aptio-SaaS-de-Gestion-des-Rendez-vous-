@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.advice;
+package com.youcode.aptio.advice;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
