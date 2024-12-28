@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.model;
+package com.youcode.aptio.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -49,14 +48,4 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));
     }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.model;
+package com.youcode.aptio.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
