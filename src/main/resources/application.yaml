@@ -1,1 +1,19 @@
-spring.application.name=Aptio
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/aptio_db
+    username: admin
+    password: admin
+  jpa:
+      hibernate:
+          ddl-auto: update
+      properties:
+          hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+      show-sql: true
+
+jwt:
+  secret: aptio-secret-key-is-very-long-and-secure-key
+  expiration: 3600000
+  refreshExpiration: 604800000

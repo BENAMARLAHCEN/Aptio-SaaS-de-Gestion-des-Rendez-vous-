@@ -1,4 +1,4 @@
-package com.youcode.aptiov2.service;
+package com.youcode.aptio.service;
 
 public interface UserService {
 }

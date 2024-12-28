@@ -1,7 +1,7 @@
-package com.youcode.aptiov2.service.impl;
+package com.youcode.aptio.service.impl;
 
-import com.youcode.aptiov2.repository.UserRepository;
-import com.youcode.aptiov2.service.UserService;
+import com.youcode.aptio.repository.UserRepository;
+import com.youcode.aptio.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
