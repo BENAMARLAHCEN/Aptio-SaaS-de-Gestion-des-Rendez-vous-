@@ -7,6 +7,7 @@ import com.youcode.aptio.dto.auth.RegisterRequest;
 import com.youcode.aptio.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,5 +38,12 @@ public class AuthenticationController {
             @RequestBody RefreshTokenRequest request
     ) {
         return ResponseEntity.ok(authService.refreshToken(request));
+    }
+
+    // validate user role and return user details
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> user() {
+        return ResponseEntity.ok("User details");
     }
 }

@@ -10,11 +10,11 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public Role() {
     }
@@ -56,7 +56,7 @@ public class Role {
     public static class Builder {
         private Long id;
         private String name;
-        private LocalDateTime createdAt;
+        private LocalDateTime createdAt = LocalDateTime.now();
 
         public Builder id(Long id) {
             this.id = id;
