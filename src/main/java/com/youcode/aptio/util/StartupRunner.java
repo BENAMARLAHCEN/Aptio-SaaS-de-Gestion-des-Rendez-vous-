@@ -1,9 +1,11 @@
 package com.youcode.aptio.util;
 
 import com.youcode.aptio.model.Role;
+import com.youcode.aptio.model.User;
 import com.youcode.aptio.repository.RoleRepository;
-import lombok.RequiredArgsConstructor;
+import com.youcode.aptio.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,10 +13,14 @@ import java.util.List;
 
 @Component
 public class StartupRunner implements CommandLineRunner {
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public StartupRunner(RoleRepository roleRepository) {
+    public StartupRunner(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -24,5 +30,25 @@ public class StartupRunner implements CommandLineRunner {
                 .findByName(roleName)
                 .orElseGet(() -> roleRepository.save(new Role(null, roleName, LocalDateTime.now())))
         );
+
+//        List<String> emails = List.of("admin@admin.com");
+//        emails.forEach(email -> userRepository
+//                .findByEmail(email)
+//                .orElseGet(() -> {
+//                    var user = User.builder()
+//                            .email(email)
+//                            .username(email)
+//                            .password(passwordEncoder.encode("admin"))
+//                            .firstName("Admin")
+//                            .lastName("Admin")
+//                            .phone("1234567890")
+//                            .build();
+//                    Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(
+//                            () -> new RuntimeException("Role not found")
+//                    );
+//                    user.setRole(role);
+//                    return userRepository.save(user);
+//                })
+//        );
     }
 }
