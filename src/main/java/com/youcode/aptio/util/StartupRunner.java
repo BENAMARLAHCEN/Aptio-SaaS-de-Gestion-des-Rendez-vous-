@@ -34,21 +34,18 @@ public class StartupRunner implements CommandLineRunner {
 //        List<String> emails = List.of("admin@admin.com");
 //        emails.forEach(email -> userRepository
 //                .findByEmail(email)
-//                .orElseGet(() -> {
-//                    var user = User.builder()
-//                            .email(email)
-//                            .username(email)
-//                            .password(passwordEncoder.encode("admin"))
-//                            .firstName("Admin")
-//                            .lastName("Admin")
-//                            .phone("1234567890")
-//                            .build();
-//                    Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(
-//                            () -> new RuntimeException("Role not found")
-//                    );
-//                    user.setRole(role);
-//                    return userRepository.save(user);
-//                })
+//                .orElse(userRepository.save(User.builder()
+//                        .email(email)
+//                        .username(email)
+//                        .password(passwordEncoder.encode("admin"))
+//                        .firstName("Admin")
+//                        .lastName("Admin")
+//                        .role(roleRepository.findByName("ROLE_ADMIN").orElseThrow())
+//                        .createdAt(LocalDateTime.now())
+//                        .isActive(true)
+//                        .build()
+//                    )
+//                )
 //        );
     }
 }

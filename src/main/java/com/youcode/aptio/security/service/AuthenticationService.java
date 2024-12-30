@@ -10,6 +10,7 @@ import com.youcode.aptio.model.User;
 import com.youcode.aptio.repository.RoleRepository;
 import com.youcode.aptio.repository.TokenRepository;
 import com.youcode.aptio.repository.UserRepository;
+import com.youcode.aptio.util.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -25,22 +27,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
-    public AuthenticationService(
-            UserRepository userRepository,
-            TokenRepository tokenRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            AuthenticationManager authenticationManager,
-            RoleRepository roleRepository
-    ) {
-        this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
-    }
+    private final UserMapper userMapper;
 
     public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail())
@@ -51,14 +38,8 @@ public class AuthenticationService {
                 .ifPresent(user -> {
                     throw new RuntimeException("Username already exists");
                 });
-        var user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .phone(request.getPhone())
-                .build();
+        User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
                 () -> new RuntimeException("Role not found")
         );
