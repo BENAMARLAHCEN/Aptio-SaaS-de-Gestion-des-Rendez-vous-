@@ -15,8 +15,8 @@ public class UserController {
         this.userService = userService;
     }
 
-//    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
-//        return ResponseEntity.ok(userService.saveUser(userDto));
-//    }
+    public ResponseEntity<?> saveUser() {
+        return ResponseEntity.ok("User saved");
+    }
 
 }

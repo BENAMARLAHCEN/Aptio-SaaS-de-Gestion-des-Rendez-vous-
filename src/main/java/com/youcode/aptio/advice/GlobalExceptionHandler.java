@@ -1,6 +1,8 @@
 package com.youcode.aptio.advice;
 
+import com.youcode.aptio.exception.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,6 +11,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -42,21 +45,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException e) {
-        return ResponseEntity.status(404).body(Map.of("message", e.getMessage()));
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<NoResourceFoundException> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        NoResourceFoundException error = new NoResourceFoundException(
+                HttpMethod.GET,
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(ResourceNotFoundException.class)
-//    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
-//        ErrorResponse error = new ErrorResponse(
-//                HttpStatus.NOT_FOUND.value(),
-//                ex.getMessage(),
-//                LocalDateTime.now()
-//        );
-//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-//    }
-//
 //    @ExceptionHandler(EmailAlreadyExistsException.class)
 //    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
 //        ErrorResponse error = new ErrorResponse(
