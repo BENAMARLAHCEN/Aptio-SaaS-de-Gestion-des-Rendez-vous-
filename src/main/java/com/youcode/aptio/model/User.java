@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,17 +23,23 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = true)
     private String phone;
+
+    @Column(name = "created_at", nullable = true)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
@@ -125,6 +132,22 @@ public class User implements UserDetails {
         return new Builder();
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public static class Builder {
         private Long id;
         private String firstName;
@@ -134,6 +157,8 @@ public class User implements UserDetails {
         private String email;
         private String phone;
         private Role role;
+        private LocalDateTime createdAt;
+        private boolean isActive;
 
         public Builder id(Long id) {
             this.id = id;
@@ -177,6 +202,16 @@ public class User implements UserDetails {
 
         public User build() {
             return new User(id, firstName, lastName, username, password, email, phone, role);
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder isActive(boolean isActive) {
+            this.isActive = isActive;
+            return this;
         }
     }
 }
