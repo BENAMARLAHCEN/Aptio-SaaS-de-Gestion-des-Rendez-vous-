@@ -14,20 +14,11 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthFilter,
-            AuthenticationProvider authenticationProvider,
-            LogoutHandler logoutHandler
-    ) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.authenticationProvider = authenticationProvider;
-        this.logoutHandler = logoutHandler;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
