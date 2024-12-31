@@ -2,6 +2,7 @@ package com.youcode.aptio.security.filter;
 
 import com.youcode.aptio.repository.TokenRepository;
 import com.youcode.aptio.security.service.JwtService;
+import com.youcode.aptio.security.service.SecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final SecurityService userDetailsService;
     private final TokenRepository tokenRepository;
 
     @Override
