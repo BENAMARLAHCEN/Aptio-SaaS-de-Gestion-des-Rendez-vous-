@@ -16,5 +16,4 @@ public class ServiceRequest {
     private double price;
     @Builder.Default
     private boolean isActive = true;
-    private Long businessId;
 }
