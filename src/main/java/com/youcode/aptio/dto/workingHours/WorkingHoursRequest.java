@@ -1,19 +1,25 @@
 package com.youcode.aptio.dto.workingHours;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class WorkingHoursRequest {
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String day;
-    private Long businessId;
+    @NotNull(message = "Start time is required")
+    private LocalTime startTime;
+
+    @NotNull(message = "End time is required")
+    private LocalTime endTime;
+
+    @NotNull(message = "Day of week is required")
+    private DayOfWeek dayOfWeek;
 }
