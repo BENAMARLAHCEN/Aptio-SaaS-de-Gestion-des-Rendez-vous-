@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeResponse {
+public class EmployeeDetailsResponse {
     private Long id;
     private Long userId;
     private String firstName;
@@ -23,4 +24,6 @@ public class EmployeeResponse {
     private Long businessId;
     private String businessName;
     private LocalDateTime createdAt;
+    private List<String> workingDays;
+    private String workingHours;
 }

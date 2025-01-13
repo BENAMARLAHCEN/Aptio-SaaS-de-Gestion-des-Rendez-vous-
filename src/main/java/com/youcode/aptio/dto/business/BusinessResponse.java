@@ -22,6 +22,8 @@ public class BusinessResponse {
     private String email;
     private String timezone;
     private String plan;
+    private Long ownerId;
+    private String ownerName;
     private LocalDateTime createdAt;
     private List<WorkingHoursResponse> workingHours;
 }

@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkingHoursResponse {
-    private Long id;
+public class BusinessHoursResponse {
     private Long businessId;
     private String businessName;
-    private DayOfWeek dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private boolean isOpen;
+    private Map<String, List<WorkingHoursResponse>> weeklySchedule;
+    private boolean isOpen24Hours;
+    private List<String> closedDays;
 }

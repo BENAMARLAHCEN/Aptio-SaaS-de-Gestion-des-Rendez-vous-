@@ -44,6 +44,7 @@ public class AuthenticationService {
                 () -> new RuntimeException("Role not found")
         );
         user.setRole(role);
+        user.onCreate();
         User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
