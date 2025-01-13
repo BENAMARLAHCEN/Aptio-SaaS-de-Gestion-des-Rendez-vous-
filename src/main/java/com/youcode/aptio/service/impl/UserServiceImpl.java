@@ -49,16 +49,10 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findByName(request.getRole())
                 .orElseThrow(() -> new RoleNotFoundException("Role not found: " + request.getRole()));
 
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phone(request.getPhone())
-                .role(role)
-                .isActive(true)
-                .build();
+        User user = userMapper.toUser(request);
+        user.setRole(role);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.onCreate();
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -79,6 +73,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userMapper.updateUserFromRequest(request, user);
+        user.onUpdate();
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -99,6 +94,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RoleNotFoundException("Role not found: " + roleName));
 
         user.setRole(role);
+        user.onUpdate();
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -108,6 +104,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         user.setActive(false);
+        user.onUpdate();
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -117,6 +114,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         user.setActive(true);
+        user.onUpdate();
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -155,6 +153,8 @@ public class UserServiceImpl implements UserService {
             user.setPhone(request.getPhone());
         }
 
+        user.onUpdate();
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -170,6 +170,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.onUpdate();
         userRepository.save(user);
     }
 }
