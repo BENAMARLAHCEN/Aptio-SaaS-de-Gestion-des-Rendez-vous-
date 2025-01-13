@@ -14,8 +14,13 @@ import java.time.LocalDateTime;
 public class EmployeeResponse {
     private Long id;
     private Long userId;
-    private Long businessId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
     private String position;
     private boolean isActive;
+    private Long businessId;
+    private String businessName;
     private LocalDateTime createdAt;
 }
