@@ -13,6 +13,7 @@ public interface UserMapper {
     User toUser(RegisterRequest registerRequest);
 
     @Mapping(target = "role", source = "role.name")
+    @Mapping(target = "active", source = "active")
     UserResponse toUserResponse(User user);
 
     @Mapping(target = "role", ignore = true)

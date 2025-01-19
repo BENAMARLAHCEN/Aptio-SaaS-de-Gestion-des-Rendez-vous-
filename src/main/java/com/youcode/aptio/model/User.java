@@ -1,10 +1,7 @@
 package com.youcode.aptio.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,15 +39,16 @@ public class User implements UserDetails {
 
     private String phone;
 
-    @Column(name = "is_active", nullable = false)
     @Builder.Default
-    private boolean isActive = true;
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private boolean active = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Token> tokens;
 
     @Column(name = "created_at", nullable = false)
@@ -83,7 +81,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive;
+        return active;
     }
 
     @Override
@@ -93,6 +91,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return active;
     }
 }

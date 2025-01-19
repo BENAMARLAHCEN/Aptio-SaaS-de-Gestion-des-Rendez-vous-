@@ -19,6 +19,6 @@ public class UserResponse {
     private String email;
     private String phone;
     private String role;
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime createdAt;
 }
