@@ -4,6 +4,7 @@ import com.youcode.aptio.dto.auth.AuthenticationRequest;
 import com.youcode.aptio.dto.auth.AuthenticationResponse;
 import com.youcode.aptio.dto.auth.RefreshTokenRequest;
 import com.youcode.aptio.dto.auth.RegisterRequest;
+import com.youcode.aptio.exception.*;
 import com.youcode.aptio.model.Role;
 import com.youcode.aptio.model.Token;
 import com.youcode.aptio.model.User;
@@ -12,8 +13,10 @@ import com.youcode.aptio.repository.TokenRepository;
 import com.youcode.aptio.repository.UserRepository;
 import com.youcode.aptio.util.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,83 +32,113 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
 
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail())
                 .ifPresent(user -> {
-                    throw new RuntimeException("User already exists");
+                    throw new EmailAlreadyExistsException("Email already exists");
                 });
         userRepository.findByUsername(request.getUsername())
                 .ifPresent(user -> {
-                    throw new RuntimeException("Username already exists");
+                    throw new UsernameAlreadyExistsException("Username already exists");
                 });
-        User user = userMapper.toUser(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
-                () -> new RuntimeException("Role not found")
-        );
-        user.setRole(role);
-        user.onCreate();
-        User savedUser = userRepository.save(user);
-        String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
+        try {
+            User user = userMapper.toUser(request);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+            // Get default user role
+            Role role = roleRepository.findByName("ROLE_USER")
+                    .orElseThrow(() -> new RoleNotFoundException("Default role not found"));
+            user.setRole(role);
+
+            user.onCreate();
+            User savedUser = userRepository.save(user);
+            String jwtToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+            saveUserToken(savedUser, jwtToken);
+
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .role(role.getName())
+                    .build();
+        } catch (Exception e) {
+            throw new UserRegistrationException("Failed to register user: " + e.getMessage());
+        }
     }
 
+    @Transactional
     public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User not found")
-                );
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+            // Check if account is locked
+            if (!user.isActive()) {
+                throw new UserAccountLockedException("Your account has been locked. Please contact support.");
+            }
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
-    public AuthenticationResponse refreshToken(RefreshTokenRequest request) {
-        final String refreshToken = request.getRefreshToken();
-        final String userEmail = jwtService.extractUsername(refreshToken);
-
-        if (userEmail != null) {
-            var user = userRepository.findByUsername(userEmail).orElseThrow(
-                    () -> new EntityNotFoundException("User not found")
+            // Attempt authentication
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
             );
 
-            if (jwtService.isTokenValid(refreshToken, user)) {
-                var accessToken = jwtService.generateToken(user);
-                revokeAllUserTokens(user);
-                saveUserToken(user, accessToken);
+            String jwtToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+            revokeAllUserTokens(user);
+            saveUserToken(user, jwtToken);
 
-                return AuthenticationResponse.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
-            }
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .role(user.getRole().getName())
+                    .build();
+        } catch (BadCredentialsException e) {
+            throw new InvalidCredentialsException("Invalid email or password");
         }
-        throw new RuntimeException("Invalid refresh token");
+    }
+
+    @Transactional
+    public AuthenticationResponse refreshToken(RefreshTokenRequest request) {
+        final String refreshToken = request.getRefreshToken();
+        final String username;
+
+        try {
+            username = jwtService.extractUsername(refreshToken);
+        } catch (Exception e) {
+            throw new InvalidJwtTokenException("Invalid refresh token");
+        }
+
+        if (username == null) {
+            throw new InvalidRefreshTokenException("Invalid refresh token");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!jwtService.isTokenValid(refreshToken, user)) {
+            throw new InvalidRefreshTokenException("Refresh token is not valid");
+        }
+
+        String accessToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken);
+
+        return AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .role(user.getRole().getName())
+                .build();
     }
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
+        if (validUserTokens.isEmpty()) {
             return;
+        }
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);

@@ -1,0 +1,361 @@
+{
+  "info": {
+    "_postman_id": "your-collection-id",
+    "name": "Aptio API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "username": "johndoe",
+                "email": "john@example.com",
+                "password": "password123",
+                "phone": "+1234567890"
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "email": "john@example.com",
+                "password": "password123"
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business",
+      "item": [
+        {
+          "name": "Create Business",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Example Business",
+                "description": "A sample business description",
+                "address": "123 Business St",
+                "phone": "+1234567890",
+                "email": "business@example.com",
+                "timezone": "America/New_York",
+                "plan": "FREE"
+              }
+            },
+            "url": "{{base_url}}/api/v1/businesses"
+          }
+        },
+        {
+          "name": "Update Business",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Updated Business Name",
+                "description": "Updated business description",
+                "address": "456 New Address St",
+                "phone": "+1987654321",
+                "email": "updated@example.com",
+                "timezone": "America/New_York",
+                "plan": "PAID"
+              }
+            },
+            "url": "{{base_url}}/api/v1/businesses/{{business_id}}"
+          }
+        },
+        {
+          "name": "Get Business by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/businesses/{{business_id}}"
+          }
+        },
+        {
+          "name": "Get My Businesses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/businesses/my-businesses"
+          }
+        },
+        {
+          "name": "Delete Business",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/businesses/{{business_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Employee",
+      "item": [
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "userId": "{{user_id}}",
+                "position": "Sales Representative",
+                "isActive": true
+              }
+            },
+            "url": "{{base_url}}/api/v1/employees/business/{{business_id}}"
+          }
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "userId": "{{user_id}}",
+                "position": "Senior Sales Representative",
+                "isActive": true
+              }
+            },
+            "url": "{{base_url}}/api/v1/employees/{{employee_id}}"
+          }
+        },
+        {
+          "name": "Get Employee by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/employees/{{employee_id}}"
+          }
+        },
+        {
+          "name": "Get Employees by Business",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/employees/business/{{business_id}}"
+          }
+        },
+        {
+          "name": "Delete Employee",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/employees/{{employee_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Working Hours",
+      "item": [
+        {
+          "name": "Create Working Hours",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "startTime": "09:00",
+                "endTime": "17:00",
+                "dayOfWeek": "MONDAY"
+              }
+            },
+            "url": "{{base_url}}/api/v1/working-hours/business/{{business_id}}"
+          }
+        },
+        {
+          "name": "Update Working Hours",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "startTime": "08:00",
+                "endTime": "16:00",
+                "dayOfWeek": "MONDAY"
+              }
+            },
+            "url": "{{base_url}}/api/v1/working-hours/{{working_hours_id}}"
+          }
+        },
+        {
+          "name": "Get Working Hours by Business",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/working-hours/business/{{business_id}}"
+          }
+        },
+        {
+          "name": "Delete Working Hours",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/working-hours/{{working_hours_id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "access_token",
+      "value": "your_access_token_here"
+    },
+    {
+      "key": "business_id",
+      "value": "1"
+    },
+    {
+      "key": "employee_id",
+      "value": "1"
+    },
+    {
+      "key": "working_hours_id",
+      "value": "1"
+    },
+    {
+      "key": "user_id",
+      "value": "1"
+    }
+  ]
+}

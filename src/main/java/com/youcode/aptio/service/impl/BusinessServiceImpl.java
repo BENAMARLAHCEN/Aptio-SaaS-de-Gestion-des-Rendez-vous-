@@ -2,6 +2,7 @@ package com.youcode.aptio.service.impl;
 
 import com.youcode.aptio.dto.business.BusinessRequest;
 import com.youcode.aptio.dto.business.BusinessResponse;
+import com.youcode.aptio.dto.business.BusinessUpdateRequest;
 import com.youcode.aptio.exception.BusinessAlreadyExistsException;
 import com.youcode.aptio.exception.ResourceNotFoundException;
 import com.youcode.aptio.exception.UnauthorizedAccessException;
@@ -54,11 +55,10 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     @Transactional
-    public BusinessResponse updateBusiness(Long id, BusinessRequest request) {
+    public BusinessResponse updateBusiness(Long id, BusinessUpdateRequest request) {
         Business business = businessRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Business not found"));
 
-        // Check authorization
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -70,13 +70,11 @@ public class BusinessServiceImpl implements BusinessService {
             throw new UnauthorizedAccessException("You don't have permission to update this business");
         }
 
-        // Validate business name uniqueness if name is being changed
         if (!business.getName().equals(request.getName()) &&
                 businessRepository.existsByName(request.getName())) {
             throw new BusinessAlreadyExistsException("Business name already exists");
         }
 
-        // Validate timezone
         if (!TimezoneUtils.isValidTimezone(request.getTimezone())) {
             throw new IllegalArgumentException("Invalid timezone");
         }

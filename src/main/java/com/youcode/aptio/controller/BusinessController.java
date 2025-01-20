@@ -26,7 +26,7 @@ public class BusinessController {
     @PreAuthorize("hasAnyRole('ADMIN', 'BUSINESS_OWNER')")
     public ResponseEntity<BusinessResponse> updateBusiness(
             @PathVariable Long id,
-            @Valid @RequestBody BusinessRequest request
+            @Valid @RequestBody BusinessUpdateRequest request
     ) {
         return ResponseEntity.ok(businessService.updateBusiness(id, request));
     }
